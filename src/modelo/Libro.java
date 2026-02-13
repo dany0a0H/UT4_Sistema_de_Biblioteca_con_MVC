@@ -1,6 +1,6 @@
 package modelo;
 
-public class Libro {
+public class Libro extends Object{
 
     private String ISBN;
     String titulo;
@@ -60,6 +60,13 @@ public class Libro {
 
     public Estado[] getEstadoCopias() {
         return estadoCopias;
+    }
+
+    @Override
+    public boolean equals(Object object){
+        String thisISBN = this.getISBN();
+        String ISBN = ((Libro)(object)).getISBN();
+        return thisISBN.equals(ISBN);
     }
 
 }
