@@ -8,7 +8,7 @@ public class Usuario {
 
     int id;
     String nombre;
-    Prestamo[] disponibilidadPrestamo;
+    public Prestamo[] disponibilidadPrestamo;
     private ArrayList<Prestamo> historialLibros;
 
     public Usuario(String nombre){

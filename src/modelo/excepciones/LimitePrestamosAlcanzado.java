@@ -5,7 +5,7 @@ import modelo.Usuario;
 
 import java.time.LocalDate;
 
-public class LimitePrestamosAlcanzado extends RuntimeException {
+public class LimitePrestamosAlcanzado extends Exception {
     Usuario usuario;
     public LimitePrestamosAlcanzado(Usuario usuario) {
         super("El usuario " + usuario.getNombre() + " de id: " + usuario.getId() + " ha alcanzado el número máximo de prestamos");

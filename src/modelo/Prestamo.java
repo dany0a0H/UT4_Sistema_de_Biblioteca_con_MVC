@@ -6,10 +6,12 @@ public class Prestamo {
 
     private Libro libro;
     private LocalDate fechaPrestamo;
+    private LocalDate fechaPrestamoVencimiento;
 
-    Prestamo(Libro libro, LocalDate fechaPrestamo) {
+    public Prestamo(Libro libro ) {
         this.libro = libro;
-        this.fechaPrestamo = fechaPrestamo;
+        this.fechaPrestamo = LocalDate.now();
+        this.fechaPrestamoVencimiento = fechaPrestamo.plusDays(30);
     }
 
     public Libro getLibro() {
