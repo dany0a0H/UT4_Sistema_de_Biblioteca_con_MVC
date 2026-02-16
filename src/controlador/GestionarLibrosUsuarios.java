@@ -15,9 +15,17 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.HashSet;
 
+/**
+ * Contiene operaciones para gestionar préstamos entre libros y usuarios.
+ */
 public class GestionarLibrosUsuarios {
 
 
+    /**
+     * Gestiona el préstamo de un libro para un usuario si se cumplen las validaciones.
+     * @param libro libro a prestar.
+     * @param usuario usuario que solicita el préstamo.
+     */
     public static void prestarLibro(Libro libro, Usuario usuario) throws  LibroNoDisponible {
 
         try{
@@ -55,6 +63,12 @@ public class GestionarLibrosUsuarios {
         }
     }
 
+    /**
+     * Ejecuta todas las validaciones previas para registrar un préstamo.
+     * @param prestamo préstamo que se desea registrar.
+     * @param usuario usuario asociado al préstamo.
+     * @return true si el préstamo es válido; false en caso contrario.
+     */
     private static boolean validezPrestamo(Prestamo prestamo, Usuario usuario) {
         try {
             return limitePrestamos(usuario) && tiempoEsperaLibro(prestamo, usuario) && prestamoNoDevuelto(usuario);
@@ -64,6 +78,11 @@ public class GestionarLibrosUsuarios {
         }
     }
 
+    /**
+     * Verifica si el usuario tiene espacio para un nuevo préstamo activo.
+     * @param usuario usuario a validar.
+     * @return true si existe al menos un espacio disponible.
+     */
     private static boolean limitePrestamos(Usuario usuario) throws LimitePrestamosAlcanzado {
         Prestamo[] prestamos = usuario.getDisponibilidadPrestamo();
         for (int i = 0; i < prestamos.length; i++) {
@@ -75,6 +94,12 @@ public class GestionarLibrosUsuarios {
         throw new LimitePrestamosAlcanzado(usuario);
     }
 
+    /**
+     * Verifica el tiempo mínimo de espera para volver a prestar el mismo libro.
+     * @param prestamo préstamo solicitado.
+     * @param usuario usuario solicitante.
+     * @return true si se cumple el tiempo de espera.
+     */
     private static  boolean tiempoEsperaLibro(Prestamo prestamo, Usuario usuario) throws TiempoEsperaDeLibro {
         ArrayList<Prestamo> historialPrestamos = usuario.getHistorialLibros();
 
@@ -96,6 +121,11 @@ public class GestionarLibrosUsuarios {
         return true;
     }
 
+    /**
+     * Verifica si el usuario tiene préstamos vencidos sin devolver.
+     * @param usuario usuario a validar.
+     * @return true si no hay préstamos vencidos sin devolución.
+     */
     private static boolean prestamoNoDevuelto(Usuario usuario) throws PrestamoNoDevuelto {
         LocalDate fechaHoy = LocalDate.now();
         Prestamo[] prestamos = usuario.getDisponibilidadPrestamo();
@@ -108,6 +138,11 @@ public class GestionarLibrosUsuarios {
         return true;
     }
 
+    /**
+     * Crea una instancia de préstamo para el libro indicado.
+     * @param libro libro a prestar.
+     * @return nuevo préstamo creado.
+     */
     private static Prestamo crearPrestamo(Libro libro){
         return new Prestamo(libro);
     }
