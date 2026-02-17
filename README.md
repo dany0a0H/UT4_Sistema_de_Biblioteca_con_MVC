@@ -5,16 +5,16 @@ Proyecto estudiantil de programación orientado a objetos, se representará un s
 ### Repartición de Tareas
 
 #### Gabriel Ruíz
-Modelo
-Controlador
+Modelo   
+Controlador   
 - Prestar libro
 - Devolver el libro
 - Reservarlo
 Excepciones
 
 #### Daniel Alonso Hernández
-Vista
-Controlador
+Vista   
+Controlador   
 - Buscar Libros según criterio indicado
 - Resumir la información de la Biblioteca (listar usuarios y libros)
 - Listar qué usuarios tienen al menos un libro prestado o un libro reservado
