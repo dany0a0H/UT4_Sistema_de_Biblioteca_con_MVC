@@ -7,6 +7,7 @@ import java.time.LocalDate;
  */
 public class Prestamo {
 
+    private int id;
     private Libro libro;
     private LocalDate fechaPrestamo;
     private LocalDate fechaPrestamoVencimiento;
@@ -16,8 +17,17 @@ public class Prestamo {
      * @param libro libro que se presta.
      */
     public Prestamo(Libro libro ) {
+        this(libro, LocalDate.now());
+    }
+    /**
+     * Crea un préstamo para el libro indicado para cualquier fecha
+     * @param libro libro que se presta
+     * @param fechaRecogida fecha en la que se hará efectivo el préstamo
+     */
+    public Prestamo(Libro libro, LocalDate fechaRecogida) {
+        this.id = (int)(Math.random()*100000);
         this.libro = libro;
-        this.fechaPrestamo = LocalDate.now();
+        this.fechaPrestamo = fechaRecogida;
         this.fechaPrestamoVencimiento = fechaPrestamo.plusDays(30);
     }
 
@@ -52,4 +62,15 @@ public class Prestamo {
     public void setFechaPrestamo(LocalDate fechaPrestamo) {
         this.fechaPrestamo = fechaPrestamo;
     }
+
+    @Override
+    public boolean equals(Object o) {
+        Prestamo prestamo = (Prestamo)o;
+        if (prestamo.id == this.id){
+            return true;
+        }
+
+        return false;
+    }
+
 }

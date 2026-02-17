@@ -138,12 +138,19 @@ public class GestionarLibrosUsuarios {
         return true;
     }
 
-    /**
-     * Crea una instancia de préstamo para el libro indicado.
-     * @param libro libro a prestar.
-     * @return nuevo préstamo creado.
-     */
-    private static Prestamo crearPrestamo(Libro libro){
-        return new Prestamo(libro);
+
+    public static void devolverLibro(Prestamo prestamo, Usuario usuario) {
+
+        try{
+            usuario.eliminarDisponibilidadPrestamo(prestamo);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+
     }
+
+    public static void reservarLibro(Libro libro, Usuario usuario) {
+
+    }
+
 }
