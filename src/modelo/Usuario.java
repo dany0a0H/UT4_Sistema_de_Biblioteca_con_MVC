@@ -96,4 +96,21 @@ public class Usuario {
         }
         throw new IllegalArgumentException("Prestamo no encontrado para el usuario");
     }
+
+    public void setReserva(Prestamo reserva) {
+        this.reserva = reserva;
+    }
+
+    public Prestamo getReserva() {
+        return reserva;
+    }
+
+    public void reservar(Libro libro, LocalDate fechaReserva) {
+        if (this.reserva == null) {
+            setReserva(new Prestamo(libro, fechaReserva));
+            return;
+        }
+        throw new IllegalArgumentException("El usuario ya tiene el libro " + this.reserva.getLibro().getTitulo() + " reservado");
+    }
+
 }

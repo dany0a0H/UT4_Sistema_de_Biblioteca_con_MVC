@@ -29,12 +29,14 @@ public class GestionarLibrosUsuarios {
     public static void prestarLibro(Libro libro, Usuario usuario) throws  LibroNoDisponible {
 
         try{
+            int index = -1;
             boolean copiaDispoible = false;
             Estado[] disponibilidadLibro = libro.getEstadoCopias();
 
             for (int i = 0; i< disponibilidadLibro.length; i++ ) {
                 if (disponibilidadLibro[i] == Estado.DISPONIBLE){
                     copiaDispoible = true;
+                    index = i;
                     break;
                 }
             }
@@ -45,17 +47,8 @@ public class GestionarLibrosUsuarios {
 
             Prestamo prestamo = new Prestamo(libro);
 
-            if (validezPrestamo(prestamo, usuario)) {
-
-
-                for (int i = 0;i < usuario.disponibilidadPrestamo.length;i++) {
-
-                    if (usuario.disponibilidadPrestamo[i] == null) {
-                        usuario.disponibilidadPrestamo[i] = prestamo;
-                    }
-
-                }
-
+            if (prestamoNoDevuelto(usuario) && tiempoEsperaLibro(prestamo, usuario)) {
+                usuario.disponibilidadPrestamo[index] = prestamo;
             }
 
         } catch (Exception e) {
@@ -71,7 +64,7 @@ public class GestionarLibrosUsuarios {
      */
     private static boolean validezPrestamo(Prestamo prestamo, Usuario usuario) {
         try {
-            return limitePrestamos(usuario) && tiempoEsperaLibro(prestamo, usuario) && prestamoNoDevuelto(usuario);
+            return (limitePrestamos(usuario) != null) && tiempoEsperaLibro(prestamo, usuario) && prestamoNoDevuelto(usuario);
         } catch (Exception e){
             System.out.println(e.getMessage());
             return false;
@@ -79,17 +72,17 @@ public class GestionarLibrosUsuarios {
     }
 
     /**
-     * Verifica si el usuario tiene espacio para un nuevo préstamo activo.
+     * Obtiene el índice del primer espacio vacío del usuario si lo tiene
      * @param usuario usuario a validar.
-     * @return true si existe al menos un espacio disponible.
+     * @return el índice del espacio vacío del usuario, si lo tiene
+     * @throws LimitePrestamosAlcanzado si no se encuentran espacios vacíos
      */
-    private static boolean limitePrestamos(Usuario usuario) throws LimitePrestamosAlcanzado {
+    private static Integer limitePrestamos(Usuario usuario) throws LimitePrestamosAlcanzado {
         Prestamo[] prestamos = usuario.getDisponibilidadPrestamo();
         for (int i = 0; i < prestamos.length; i++) {
             if(prestamos[i] == null){
-                return true;
+                return i;
             }
-
         }
         throw new LimitePrestamosAlcanzado(usuario);
     }
@@ -99,6 +92,7 @@ public class GestionarLibrosUsuarios {
      * @param prestamo préstamo solicitado.
      * @param usuario usuario solicitante.
      * @return true si se cumple el tiempo de espera.
+     * @throws TiempoEsperaDeLibro si el tiempo de espera de 7 días no se ha cumplido
      */
     private static  boolean tiempoEsperaLibro(Prestamo prestamo, Usuario usuario) throws TiempoEsperaDeLibro {
         ArrayList<Prestamo> historialPrestamos = usuario.getHistorialLibros();
@@ -125,6 +119,7 @@ public class GestionarLibrosUsuarios {
      * Verifica si el usuario tiene préstamos vencidos sin devolver.
      * @param usuario usuario a validar.
      * @return true si no hay préstamos vencidos sin devolución.
+     * @throws PrestamoNoDevuelto si el usuario ha dejado vencer un préstamo
      */
     private static boolean prestamoNoDevuelto(Usuario usuario) throws PrestamoNoDevuelto {
         LocalDate fechaHoy = LocalDate.now();
@@ -149,8 +144,25 @@ public class GestionarLibrosUsuarios {
 
     }
 
-    public static void reservarLibro(Libro libro, Usuario usuario) {
+    public static void reservarLibro(Libro libro, Usuario usuario, LocalDate fechaReserva) {
+        try{
+            usuario.reservar(libro, fechaReserva);
+        } catch (Exception e) {
+            System.out.println(e.getMessage());
+        }
+    }
 
+    public static void reservaEnPrestamo(Prestamo reserva, Usuario usuario) {
+         try{
+             Integer index = limitePrestamos(usuario);
+             if ( index != null){
+                 Prestamo auxReserva = usuario.getReserva();
+                 usuario.setReserva(null);
+                 usuario.disponibilidadPrestamo[index] = auxReserva;
+             }
+         } catch (Exception e){
+             System.out.println(e.getMessage());
+         }
     }
 
 }
