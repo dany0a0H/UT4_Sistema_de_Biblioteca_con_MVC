@@ -82,4 +82,3 @@ public class Usuario {
     }
 }
 
-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

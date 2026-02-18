@@ -9,7 +9,7 @@ public class Libro extends Object{
     String titulo;
     String autor;
     String edtorial;
-    Genero genero;
+    static Genero genero;
     Estado[] estadoCopias;
 
     /**
@@ -98,7 +98,7 @@ public class Libro extends Object{
      * Obtiene el género del libro.
      * @return género del libro.
      */
-    public Genero getGenero() {
+    public static Genero getGenero() {
         return genero;
     }
 
@@ -130,4 +130,7 @@ public class Libro extends Object{
         return thisISBN.equals(ISBN);
     }
 
+    public String getEstado() {
+        return "";
+    }
 }
