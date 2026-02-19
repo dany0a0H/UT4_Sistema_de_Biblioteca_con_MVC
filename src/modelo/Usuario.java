@@ -76,6 +76,9 @@ public class Usuario {
      * @param disponibilidadPrestamo arreglo de préstamos.
      */
     public void setLibrosPrestados(Prestamo[] disponibilidadPrestamo) {
+        if (disponibilidadPrestamo.length != 3) {
+            throw new IllegalArgumentException("No puedes insertar una lista de disponibilidad de préstamos de más de 3 elementos");
+        }
         this.disponibilidadPrestamo = disponibilidadPrestamo;
     }
 
@@ -111,6 +114,10 @@ public class Usuario {
             return;
         }
         throw new IllegalArgumentException("El usuario ya tiene el libro " + this.reserva.getLibro().getTitulo() + " reservado");
+    }
+
+    public void anyadirAHistorial(Prestamo prestamo){
+        this.historialLibros.add(prestamo);
     }
 
 }

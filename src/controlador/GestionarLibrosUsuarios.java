@@ -49,6 +49,7 @@ public class GestionarLibrosUsuarios {
 
             if (prestamoNoDevuelto(usuario) && tiempoEsperaLibro(prestamo, usuario)) {
                 usuario.disponibilidadPrestamo[index] = prestamo;
+                usuario.anyadirAHistorial(prestamo);
             }
 
         } catch (Exception e) {
@@ -94,10 +95,10 @@ public class GestionarLibrosUsuarios {
      * @return true si se cumple el tiempo de espera.
      * @throws TiempoEsperaDeLibro si el tiempo de espera de 7 días no se ha cumplido
      */
-    private static  boolean tiempoEsperaLibro(Prestamo prestamo, Usuario usuario) throws TiempoEsperaDeLibro {
+    public static  boolean tiempoEsperaLibro(Prestamo prestamo, Usuario usuario) throws TiempoEsperaDeLibro {
         ArrayList<Prestamo> historialPrestamos = usuario.getHistorialLibros();
 
-        for (int i = historialPrestamos.size(); i >= 0; i--) {
+        for (int i = historialPrestamos.size() - 1; i >= 0; i--) {
 
             if (prestamo.getLibro().equals(historialPrestamos.get(i).getLibro())) {
 
@@ -125,8 +126,8 @@ public class GestionarLibrosUsuarios {
         LocalDate fechaHoy = LocalDate.now();
         Prestamo[] prestamos = usuario.getDisponibilidadPrestamo();
 
-        for (int i = prestamos.length; i >= 0; i--) {
-            if (ChronoUnit.DAYS.between(fechaHoy, prestamos[i].getFechaPrestamo()) > 30) {
+        for (int i = prestamos.length - 1; i >= 0; i--) {
+            if (Math.abs(ChronoUnit.DAYS.between(fechaHoy, prestamos[i].getFechaPrestamo())) > 30) {
                 throw new PrestamoNoDevuelto(usuario, prestamos[i]);
             }
         }
