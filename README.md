@@ -13,7 +13,7 @@ Controlador
 Excepciones
 
 #### Daniel Alonso Hernández
-Vista   
+vista   
 Controlador   
 - Buscar Libros según criterio indicado
 - Resumir la información de la Biblioteca (listar usuarios y libros)

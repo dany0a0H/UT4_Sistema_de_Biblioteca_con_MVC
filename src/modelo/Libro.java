@@ -3,8 +3,9 @@ package modelo;
 /**
  * Representa un libro con sus datos bibliográficos y estado de copias.
  */
-public class Libro extends Object{
+public class Libro implements Identificable{
 
+    private int id;
     private String ISBN;
     String titulo;
     String autor;
@@ -28,6 +29,13 @@ public class Libro extends Object{
         this.edtorial = edtorial;
         this.genero = genero;
         this.estadoCopias = new Estado[cantidadCopias];
+        estadoCopiasDefault();
+    }
+
+    private void estadoCopiasDefault(){
+        for (int i = 0; i < this.estadoCopias.length; i++) {
+            estadoCopias[i] = Estado.DISPONIBLE;
+        }
     }
 
     /**
@@ -132,5 +140,17 @@ public class Libro extends Object{
 
     public String getEstado() {
         return "";
+    }
+
+    public void setId(){
+        this.id = (int)(Math.random()*100000);
+    }
+
+    public void setId(int id){
+        this.id = id;
+    }
+
+    public int getId(){
+        return this.id;
     }
 }

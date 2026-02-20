@@ -1,4 +1,4 @@
-package modelo.excepciones;
+package excepciones;
 
 /**
  * Excepción lanzada cuando aún no se cumple el tiempo de espera para un libro.

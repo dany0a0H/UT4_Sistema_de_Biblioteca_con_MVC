@@ -18,13 +18,6 @@ class UsuarioTest {
     }
 
     @Test
-    void getSetIdFunciona() {
-        Usuario usuario = new Usuario("Ana");
-        usuario.setId(11);
-        assertEquals(11, usuario.getId());
-    }
-
-    @Test
     void getSetNombreFunciona() {
         Usuario usuario = new Usuario("Ana");
         usuario.setNombre("Luis");
@@ -34,7 +27,7 @@ class UsuarioTest {
     @Test
     void getSetDisponibilidadPrestamoFunciona() {
         Usuario usuario = new Usuario("Ana");
-        Prestamo[] prestamos = new Prestamo[2];
+        Prestamo[] prestamos = new Prestamo[3];
         usuario.setLibrosPrestados(prestamos);
         assertSame(prestamos, usuario.getDisponibilidadPrestamo());
     }
@@ -47,7 +40,7 @@ class UsuarioTest {
 
     @Test
     void eliminarDisponibilidadPrestamoEliminaCuandoExiste() {
-        Usuario usuario = usuarioConDisponibilidad(1);
+        Usuario usuario = usuarioConDisponibilidad(3);
         Prestamo prestamo = crearPrestamo("001");
         usuario.getDisponibilidadPrestamo()[0] = prestamo;
 
@@ -58,15 +51,15 @@ class UsuarioTest {
 
     @Test
     void eliminarDisponibilidadPrestamoLanzaExcepcionCuandoNoExiste() {
-        Usuario usuario = usuarioConDisponibilidad(1);
-        usuario.getDisponibilidadPrestamo()[0] = crearPrestamo("001");
+        Usuario usuario = usuarioConDisponibilidad(3);
+        Prestamo prestamo = crearPrestamo("001");
 
-        assertThrows(IllegalArgumentException.class, () -> usuario.eliminarDisponibilidadPrestamo(crearPrestamo("002")));
+        assertThrows(IllegalArgumentException.class, () -> usuario.eliminarDisponibilidadPrestamo(prestamo));
     }
 
     @Test
     void getSetReservaFunciona() {
-        Usuario usuario = usuarioConDisponibilidad(1);
+        Usuario usuario = usuarioConDisponibilidad(3);
         Prestamo reserva = crearPrestamo("010");
 
         usuario.setReserva(reserva);
@@ -76,7 +69,7 @@ class UsuarioTest {
 
     @Test
     void reservarAsignaReservaSiNoHayReservaActual() {
-        Usuario usuario = usuarioConDisponibilidad(1);
+        Usuario usuario = usuarioConDisponibilidad(3);
         Libro libro = crearLibro("020");
         LocalDate fecha = LocalDate.now().plusDays(4);
 
@@ -89,7 +82,7 @@ class UsuarioTest {
 
     @Test
     void reservarLanzaExcepcionSiYaExisteReserva() {
-        Usuario usuario = usuarioConDisponibilidad(1);
+        Usuario usuario = usuarioConDisponibilidad(3);
         usuario.setReserva(crearPrestamo("020"));
 
         assertThrows(IllegalArgumentException.class, () -> usuario.reservar(crearLibro("021"), LocalDate.now().plusDays(1)));

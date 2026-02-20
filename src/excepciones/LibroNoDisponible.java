@@ -1,4 +1,4 @@
-package modelo.excepciones;
+package excepciones;
 
 import modelo.Libro;
 

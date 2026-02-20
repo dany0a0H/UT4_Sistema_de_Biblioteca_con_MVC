@@ -5,7 +5,7 @@ import java.time.LocalDate;
 /**
  * Representa un préstamo de un libro con fechas de inicio y vencimiento.
  */
-public class Prestamo {
+public class Prestamo implements Identificable{
 
   private int id;
   private Libro libro;
@@ -33,6 +33,8 @@ public class Prestamo {
     this.fechaPrestamo = fechaRecogida;
     this.fechaPrestamoVencimiento = fechaPrestamo.plusDays(30);
   }
+
+
 
   /**
    * Obtiene el libro asociado al préstamo.
@@ -78,6 +80,18 @@ public class Prestamo {
     }
 
     return false;
+  }
+
+  public void setId(int id) {
+    this.id = id;
+  }
+
+  public void  setId() {
+    this.id = (int) (Math.random() * 100000);
+  }
+
+  public int getId() {
+    return id;
   }
 
 }

@@ -1,7 +1,7 @@
 package controlador;
 
 import modelo.*;
-import modelo.excepciones.LibroNoDisponible;
+import excepciones.LibroNoDisponible;
 import org.junit.jupiter.api.Assertions;
 import org.junit.jupiter.api.Test;
 
