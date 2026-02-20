@@ -10,13 +10,13 @@ public class Consola {
 
     // Mostrar lista de libros por consola.
 
-    public void mostrarLibros(List<Libro> libros) {
+    public String mostrarLibros(List<Libro> libros) {
 
         // Validación
         // Evita que imprima listas vacías
         if (libros.isEmpty()) {
             System.out.println("No se encontraron libros.");
-            return;
+            return null;
         }
 
         // Recorre cada libro y muestra los datos.
@@ -29,10 +29,11 @@ public class Consola {
             System.out.println("Copias disponibles: " + libro.getEstadoCopias());
             System.out.println("---------------------------");
         }
+        return null;
     }
 
     // Muestra una lista de usuarios y los libros que tienen prestados.
-    public void mostrarUsuarios(List<Usuario> usuarios) {
+    public String mostrarUsuarios(List<Usuario> usuarios) {
         for (Usuario usuario : usuarios) {
             System.out.println("ID: " + usuario.getId());
             System.out.println("Nombre: " + usuario.getNombre());
@@ -45,10 +46,11 @@ public class Consola {
 
             System.out.println("---------------------------");
         }
+        return null;
     }
 
     // Muestra si un usuario tiene actualmente un libro prestado.
-    public void mostrarUsuario(Usuario usuario) {
+    public String mostrarUsuario(Usuario usuario) {
 
         // null = no prestado
         if (usuario == null) {
@@ -56,6 +58,7 @@ public class Consola {
         } else {
             System.out.println("El libro lo tiene: " + usuario.getNombre());
         }
+        return null;
     }
 
 }
