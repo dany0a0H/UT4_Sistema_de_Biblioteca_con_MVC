@@ -110,7 +110,7 @@ public class GestionarLibrosUsuariosTest {
     void prestarLibroSiSeCumplenTodasLasCondicionesTest() throws LibroNoDisponible {
         Usuario usuario = crearUsuario();
         usuario.setLibrosPrestados(new Prestamo[]{
-                new Prestamo(crearLibroConISBN("ISBN-ACTIVO-3", "Activo 3", 1), LocalDate.now().minusDays(2)),
+                null,
                 new Prestamo(crearLibroConISBN("ISBN-ACTIVO-4", "Activo 4", 1), LocalDate.now().minusDays(1)),
                 new Prestamo(crearLibroConISBN("ISBN-ACTIVO-5", "Activo 5", 1), LocalDate.now().minusDays(3))
         });
@@ -119,15 +119,14 @@ public class GestionarLibrosUsuariosTest {
         libroSolicitado.getEstadoCopias()[0] = Estado.DISPONIBLE;
         libroSolicitado.getEstadoCopias()[1] = Estado.PRESTADO;
 
-        String expectedISBNPos0 = libroSolicitado.getISBN();
-        String expectedISBNPos1 = usuario.getDisponibilidadPrestamo()[1].getLibro().getISBN();
-        String expectedISBNPos2 = usuario.getDisponibilidadPrestamo()[2].getLibro().getISBN();
+        Libro expectedLibroPos1 = usuario.getDisponibilidadPrestamo()[1].getLibro();
+        Libro expectedLibroPos2 = usuario.getDisponibilidadPrestamo()[2].getLibro();
 
         GestionarLibrosUsuarios.prestarLibro(libroSolicitado, usuario);
 
-        Assertions.assertEquals(expectedISBNPos0, usuario.getDisponibilidadPrestamo()[0].getLibro().getISBN());
-        Assertions.assertEquals(expectedISBNPos1, usuario.getDisponibilidadPrestamo()[1].getLibro().getISBN());
-        Assertions.assertEquals(expectedISBNPos2, usuario.getDisponibilidadPrestamo()[2].getLibro().getISBN());
+        Assertions.assertEquals(libroSolicitado, usuario.getDisponibilidadPrestamo()[0].getLibro());
+        Assertions.assertEquals(expectedLibroPos1, usuario.getDisponibilidadPrestamo()[1].getLibro());
+        Assertions.assertEquals(expectedLibroPos2, usuario.getDisponibilidadPrestamo()[2].getLibro());
     }
 
     @Test
@@ -248,7 +247,7 @@ public class GestionarLibrosUsuariosTest {
         Assertions.assertEquals(reservaPrevia.getFechaPrestamo(), usuario.getReserva().getFechaPrestamo());
     }
 
-    
+
 
     public static Usuario crearUsuario(){
         return new Usuario("Test");
@@ -269,6 +268,20 @@ public class GestionarLibrosUsuariosTest {
         for (int i = 0; i < prestamos.length; i++) {
             Prestamo prestamo = prestamos[i];
             contenido[i] = prestamo.getLibro().getISBN() + "|" + prestamo.getFechaPrestamo();
+        }
+        return contenido;
+    }
+
+    private static String[] contenidoDisponibilidadConNulos(Usuario usuario) {
+        Prestamo[] prestamos = usuario.getDisponibilidadPrestamo();
+        String[] contenido = new String[prestamos.length];
+        for (int i = 0; i < prestamos.length; i++) {
+            Prestamo prestamo = prestamos[i];
+            if (prestamo == null) {
+                contenido[i] = "null";
+            } else {
+                contenido[i] = prestamo.getLibro().getISBN() + "|" + prestamo.getFechaPrestamo();
+            }
         }
         return contenido;
     }

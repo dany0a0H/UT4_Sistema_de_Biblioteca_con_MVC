@@ -29,14 +29,15 @@ public class GestionarLibrosUsuarios {
     public static void prestarLibro(Libro libro, Usuario usuario) throws  LibroNoDisponible {
 
         try{
-            int index = -1;
+            int indexLibroDisponibilidad = -1;
+            int indexUsuarioDisponibilidad = limitePrestamos(usuario);
             boolean copiaDispoible = false;
             Estado[] disponibilidadLibro = libro.getEstadoCopias();
 
             for (int i = 0; i< disponibilidadLibro.length; i++ ) {
                 if (disponibilidadLibro[i] == Estado.DISPONIBLE){
                     copiaDispoible = true;
-                    index = i;
+                    indexLibroDisponibilidad  = i;
                     break;
                 }
             }
@@ -48,8 +49,9 @@ public class GestionarLibrosUsuarios {
             Prestamo prestamo = new Prestamo(libro);
 
             if (prestamoNoDevuelto(usuario) && tiempoEsperaLibro(prestamo, usuario)) {
-                usuario.disponibilidadPrestamo[index] = prestamo;
+                usuario.disponibilidadPrestamo[indexUsuarioDisponibilidad] = prestamo;
                 usuario.anyadirAHistorial(prestamo);
+                libro.getEstadoCopias()[indexLibroDisponibilidad] = Estado.PRESTADO;
             }
 
         } catch (Exception e) {
@@ -127,6 +129,9 @@ public class GestionarLibrosUsuarios {
         Prestamo[] prestamos = usuario.getDisponibilidadPrestamo();
 
         for (int i = prestamos.length - 1; i >= 0; i--) {
+            if (prestamos[i] == null){
+                continue;
+            }
             if (Math.abs(ChronoUnit.DAYS.between(fechaHoy, prestamos[i].getFechaPrestamo())) > 30) {
                 throw new PrestamoNoDevuelto(usuario, prestamos[i]);
             }
@@ -153,9 +158,16 @@ public class GestionarLibrosUsuarios {
         }
     }
 
-    public static void reservaEnPrestamo(Prestamo reserva, Usuario usuario) {
+    public static void reservaEnPrestamo(Usuario usuario) {
          try{
-           prestarLibro();
+             Prestamo reserva = usuario.getReserva();
+             if(reserva != null && prestamoNoDevuelto(usuario)){
+                 int index = limitePrestamos(usuario);
+                 usuario.anyadirAHistorial(reserva);
+                 usuario.getDisponibilidadPrestamo()[index] = reserva;
+                 usuario.setReserva(null);
+             }
+
          } catch (Exception e){
              System.out.println(e.getMessage());
              cancelarReserva(usuario);

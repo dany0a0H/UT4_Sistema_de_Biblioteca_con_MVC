@@ -111,15 +111,18 @@ public class Usuario {
     public void reservar(Libro libro, LocalDate fechaReserva) {
 
         boolean libroDisponible = false;
+        int index = -1;
 
         for (int i = 0; i < libro.getEstadoCopias().length; i++) {
             if (libro.getEstadoCopias()[i] == Estado.DISPONIBLE) {
                 libroDisponible = true;
+                index = i;
             }
         }
 
         if (this.reserva == null && libroDisponible) {
             setReserva(new Prestamo(libro, fechaReserva));
+            libro.getEstadoCopias()[index] = Estado.RESERVADO;
             return;
         }
         throw new IllegalArgumentException("El usuario ya tiene el libro " + this.reserva.getLibro().getTitulo() + " reservado");
