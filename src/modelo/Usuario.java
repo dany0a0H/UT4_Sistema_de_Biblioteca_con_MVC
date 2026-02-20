@@ -3,11 +3,13 @@ package modelo;
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.Random;
+import java.util.regex.Matcher;
+import java.util.regex.Pattern;
 
 /**
  * Representa un usuario del sistema de biblioteca.
  */
-public class Usuario {
+public class Usuario implements Identificable{
 
     int id;
     String nombre;
@@ -25,8 +27,7 @@ public class Usuario {
      * @param nombre nombre del usuario.
      */
     public Usuario(String nombre){
-        Random r = new Random();
-        this.id = r.nextInt(1000001);
+        setId();
         this.nombre = nombre;
         this.historialLibros = new ArrayList<>();
     }
@@ -37,14 +38,6 @@ public class Usuario {
      */
     public int getId() {
         return id;
-    }
-
-    /**
-     * Establece el identificador del usuario.
-     * @param id nuevo identificador.
-     */
-    public void setId(int id) {
-        this.id = id;
     }
 
     /**
@@ -92,7 +85,9 @@ public class Usuario {
 
     public void eliminarDisponibilidadPrestamo(Prestamo prestamo) {
         for (int i = 0; i < this.disponibilidadPrestamo.length; i++) {
-            if (this.disponibilidadPrestamo[i].equals(prestamo)) {
+            if (this.disponibilidadPrestamo[i] == null) {
+                continue;
+            } else if (this.disponibilidadPrestamo[i].equals(prestamo)) {
                 this.disponibilidadPrestamo[i] = null;
                 return;
             }
@@ -125,11 +120,20 @@ public class Usuario {
             libro.getEstadoCopias()[index] = Estado.RESERVADO;
             return;
         }
-        throw new IllegalArgumentException("El usuario ya tiene el libro " + this.reserva.getLibro().getTitulo() + " reservado");
+        throw new IllegalArgumentException("No se ha podido realizar la reserva del libro" );
     }
 
     public void anyadirAHistorial(Prestamo prestamo){
         this.historialLibros.add(prestamo);
     }
+
+    public void setId(){
+        this.id = (int)(Math.random()*100000);
+    }
+
+    public void setId(int id){
+        this.id = id;
+    }
+
 
 }

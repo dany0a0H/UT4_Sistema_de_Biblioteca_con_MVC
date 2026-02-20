@@ -4,16 +4,14 @@ import modelo.Estado;
 import modelo.Libro;
 import modelo.Prestamo;
 import modelo.Usuario;
-import modelo.excepciones.LibroNoDisponible;
-import modelo.excepciones.LimitePrestamosAlcanzado;
-import modelo.excepciones.PrestamoNoDevuelto;
-import modelo.excepciones.TiempoEsperaDeLibro;
+import excepciones.LibroNoDisponible;
+import excepciones.LimitePrestamosAlcanzado;
+import excepciones.PrestamoNoDevuelto;
+import excepciones.TiempoEsperaDeLibro;
 
 import java.time.LocalDate;
 import java.time.temporal.ChronoUnit;
 import java.util.ArrayList;
-import java.util.HashMap;
-import java.util.HashSet;
 
 /**
  * Contiene operaciones para gestionar préstamos entre libros y usuarios.
