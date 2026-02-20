@@ -14,6 +14,12 @@ public class Usuario {
     public Prestamo[] disponibilidadPrestamo;
     private ArrayList<Prestamo> historialLibros;
 
+    /**@implNote Se toma una reserva como un préstamo que se hará a futuro, reflejado en su atributo
+     * fechaPrestamo */
+
+    Prestamo reserva;
+
+
     /**
      * Crea un usuario con identificador aleatorio y nombre asignado.
      * @param nombre nombre del usuario.
@@ -70,6 +76,9 @@ public class Usuario {
      * @param disponibilidadPrestamo arreglo de préstamos.
      */
     public void setLibrosPrestados(Prestamo[] disponibilidadPrestamo) {
+        if (disponibilidadPrestamo.length != 3) {
+            throw new IllegalArgumentException("No puedes insertar una lista de disponibilidad de préstamos de más de 3 elementos");
+        }
         this.disponibilidadPrestamo = disponibilidadPrestamo;
     }
 
@@ -80,5 +89,47 @@ public class Usuario {
     public ArrayList<Prestamo> getHistorialLibros() {
         return historialLibros;
     }
-}
 
+    public void eliminarDisponibilidadPrestamo(Prestamo prestamo) {
+        for (int i = 0; i < this.disponibilidadPrestamo.length; i++) {
+            if (this.disponibilidadPrestamo[i].equals(prestamo)) {
+                this.disponibilidadPrestamo[i] = null;
+                return;
+            }
+        }
+        throw new IllegalArgumentException("Prestamo no encontrado para el usuario");
+    }
+
+    public void setReserva(Prestamo reserva) {
+        this.reserva = reserva;
+    }
+
+    public Prestamo getReserva() {
+        return reserva;
+    }
+
+    public void reservar(Libro libro, LocalDate fechaReserva) {
+
+        boolean libroDisponible = false;
+        int index = -1;
+
+        for (int i = 0; i < libro.getEstadoCopias().length; i++) {
+            if (libro.getEstadoCopias()[i] == Estado.DISPONIBLE) {
+                libroDisponible = true;
+                index = i;
+            }
+        }
+
+        if (this.reserva == null && libroDisponible) {
+            setReserva(new Prestamo(libro, fechaReserva));
+            libro.getEstadoCopias()[index] = Estado.RESERVADO;
+            return;
+        }
+        throw new IllegalArgumentException("El usuario ya tiene el libro " + this.reserva.getLibro().getTitulo() + " reservado");
+    }
+
+    public void anyadirAHistorial(Prestamo prestamo){
+        this.historialLibros.add(prestamo);
+    }
+
+}
