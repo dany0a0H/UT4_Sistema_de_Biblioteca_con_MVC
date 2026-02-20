@@ -247,6 +247,82 @@ public class GestionarLibrosUsuariosTest {
         Assertions.assertEquals(reservaPrevia.getFechaPrestamo(), usuario.getReserva().getFechaPrestamo());
     }
 
+    @Test
+    void reservaEnPrestamoUsuarioSinReservaTest() {
+        Usuario usuario = crearUsuario();
+        usuario.setLibrosPrestados(new Prestamo[]{
+                new Prestamo(crearLibroConISBN("ISBN-REP-1", "REP1", 1), LocalDate.now().minusDays(3)),
+                null,
+                new Prestamo(crearLibroConISBN("ISBN-REP-3", "REP3", 1), LocalDate.now().minusDays(1))
+        });
+
+        String[] esperadoDisponibilidad = contenidoDisponibilidadConNulos(usuario);
+        Prestamo esperadoReserva = usuario.getReserva();
+
+        GestionarLibrosUsuarios.reservaEnPrestamo(usuario);
+
+        Assertions.assertEquals(Arrays.toString(esperadoDisponibilidad), Arrays.toString(contenidoDisponibilidadConNulos(usuario)));
+        Assertions.assertEquals(esperadoReserva, usuario.getReserva());
+    }
+
+    @Test
+    void reservaEnPrestamoUsuarioConPrestamoNoDevueltoTest() {
+        Usuario usuario = crearUsuario();
+        usuario.setLibrosPrestados(new Prestamo[]{
+                new Prestamo(crearLibroConISBN("ISBN-REP-A", "REPA", 1), LocalDate.now().minusDays(45)),
+                null,
+                new Prestamo(crearLibroConISBN("ISBN-REP-C", "REPC", 1), LocalDate.now().minusDays(2))
+        });
+
+        Prestamo reserva = new Prestamo(crearLibroConISBN("ISBN-RES-OVERDUE", "Reserva Overdue", 1), LocalDate.now().plusDays(1));
+        usuario.setReserva(reserva);
+        String[] esperadoDisponibilidad = contenidoDisponibilidadConNulos(usuario);
+
+        GestionarLibrosUsuarios.reservaEnPrestamo(usuario);
+
+        Assertions.assertEquals(Arrays.toString(esperadoDisponibilidad), Arrays.toString(contenidoDisponibilidadConNulos(usuario)));
+        Assertions.assertEquals(null, usuario.getReserva());
+    }
+
+    @Test
+    void reservaEnPrestamoUsuarioAlcanzoLimiteTest() {
+        Usuario usuario = crearUsuario();
+        usuario.setLibrosPrestados(new Prestamo[]{
+                new Prestamo(crearLibroConISBN("ISBN-REP-L1", "REPL1", 1), LocalDate.now().minusDays(4)),
+                new Prestamo(crearLibroConISBN("ISBN-REP-L2", "REPL2", 1), LocalDate.now().minusDays(3)),
+                new Prestamo(crearLibroConISBN("ISBN-REP-L3", "REPL3", 1), LocalDate.now().minusDays(2))
+        });
+
+        Prestamo reserva = new Prestamo(crearLibroConISBN("ISBN-RES-LIMIT", "Reserva Limit", 1), LocalDate.now().plusDays(1));
+        usuario.setReserva(reserva);
+        String[] esperadoDisponibilidad = contenidoDisponibilidadConNulos(usuario);
+
+        GestionarLibrosUsuarios.reservaEnPrestamo(usuario);
+
+        Assertions.assertEquals(Arrays.toString(esperadoDisponibilidad), Arrays.toString(contenidoDisponibilidadConNulos(usuario)));
+        Assertions.assertEquals(null, usuario.getReserva());
+    }
+
+    @Test
+    void reservaEnPrestamoCasoFuncionalTest() {
+        Usuario usuario = crearUsuario();
+        usuario.setLibrosPrestados(new Prestamo[]{
+                new Prestamo(crearLibroConISBN("ISBN-REP-F1", "REPF1", 1), LocalDate.now().minusDays(3)),
+                null,
+                new Prestamo(crearLibroConISBN("ISBN-REP-F3", "REPF3", 1), LocalDate.now().minusDays(1))
+        });
+
+        Prestamo reserva = new Prestamo(crearLibroConISBN("ISBN-RES-OK-2", "Reserva OK", 1), LocalDate.now().plusDays(2));
+        usuario.setReserva(reserva);
+
+        GestionarLibrosUsuarios.reservaEnPrestamo(usuario);
+
+        Assertions.assertEquals("ISBN-REP-F1", usuario.getDisponibilidadPrestamo()[0].getLibro().getISBN());
+        Assertions.assertEquals("ISBN-RES-OK-2", usuario.getDisponibilidadPrestamo()[1].getLibro().getISBN());
+        Assertions.assertEquals("ISBN-REP-F3", usuario.getDisponibilidadPrestamo()[2].getLibro().getISBN());
+        Assertions.assertEquals(null, usuario.getReserva());
+    }
+
 
 
     public static Usuario crearUsuario(){
