@@ -109,7 +109,16 @@ public class Usuario {
     }
 
     public void reservar(Libro libro, LocalDate fechaReserva) {
-        if (this.reserva == null) {
+
+        boolean libroDisponible = false;
+
+        for (int i = 0; i < libro.getEstadoCopias().length; i++) {
+            if (libro.getEstadoCopias()[i] == Estado.DISPONIBLE) {
+                libroDisponible = true;
+            }
+        }
+
+        if (this.reserva == null && libroDisponible) {
             setReserva(new Prestamo(libro, fechaReserva));
             return;
         }

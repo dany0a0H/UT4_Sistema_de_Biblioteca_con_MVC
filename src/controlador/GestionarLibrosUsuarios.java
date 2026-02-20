@@ -155,15 +155,15 @@ public class GestionarLibrosUsuarios {
 
     public static void reservaEnPrestamo(Prestamo reserva, Usuario usuario) {
          try{
-             Integer index = limitePrestamos(usuario);
-             if ( index != null){
-                 Prestamo auxReserva = usuario.getReserva();
-                 usuario.setReserva(null);
-                 usuario.disponibilidadPrestamo[index] = auxReserva;
-             }
+           prestarLibro();
          } catch (Exception e){
              System.out.println(e.getMessage());
+             cancelarReserva(usuario);
          }
+    }
+
+    public static void cancelarReserva(Usuario usuario){
+        usuario.setReserva(null);
     }
 
 }
